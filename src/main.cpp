@@ -15,7 +15,7 @@ struct $baseModify(FLAlertLayer) {
         auto self = reinterpret_cast<FLAlertLayer*>(this);
         auto name = geode::cocos::getObjectName(self);
 
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardsPage") return; // RewardsPage bugs as FUCK
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer") return; // RewardUnlockLayer bugs as FUCK
 
         tryAddBlur(self);
     }
