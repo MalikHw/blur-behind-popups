@@ -1,6 +1,6 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/FLAlertLayer.hpp>
-#include <alphalaneous.alphas_geode_utils/include/ObjectModify.hpp> // HOLY FUCKING SHIT THAT'S EASIER
+#include <alphalaneous.alphas_geode_utils/include/ObjectModify.hpp> // HOLY SHIT THAT'S EASIER
 #include "BlurAPI.hpp"
 
 using namespace geode::prelude;
@@ -15,7 +15,7 @@ struct $baseModify(FLAlertLayer) {
         auto self = reinterpret_cast<FLAlertLayer*>(this);
         auto name = geode::cocos::getObjectName(self);
 
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay") return;
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardsPage") return; // RewardsPage bugs as FUCK
 
         tryAddBlur(self);
     }
