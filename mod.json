@@ -29,7 +29,7 @@
             "version": ">=v1.0.0",
             "required": true
         },
-        "alphalaneous.alpha_utils": {
+        "alphalaneous.alphas_geode_utils": {
             "version": ">=v1.2.5",
             "required": true
         }
