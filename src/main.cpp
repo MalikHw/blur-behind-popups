@@ -1,6 +1,6 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/FLAlertLayer.hpp>
-#include <alphalaneous.alphas_geode_utils/ObjectModify.hpp> // HOLY FUCKING SHIT THAT'S EASIER
+#include <alphalaneous.alphas_geode_utils/include/ObjectModify.hpp> // HOLY FUCKING SHIT THAT'S EASIER
 #include "BlurAPI.hpp"
 
 using namespace geode::prelude;
