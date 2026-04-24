@@ -6,11 +6,11 @@
         "android": "2.2081",
         "ios": "2.2081"
     },
-    "version": "1.0.0",
+    "version": "1.1.0",
     "id": "malikhw47.blur-behind-popups",
     "name": "blur behind popups",
     "developer": "MalikHw47",
-    "description": "Blurs behing UI popups.",
+    "description": "Blurs behind UI popups.",
     "tags": ["universal", "customization"],
     "links": {
         "source": "https://github.com/MalikHw/blur-behind-popups",
@@ -27,6 +27,10 @@
     "dependencies": {
         "thesillydoggo.blur-api": {
             "version": ">=v1.0.0",
+            "required": true
+        },
+        "alphalaneous.alpha_utils": {
+            "version": ">=v1.2.5",
             "required": true
         }
     }
