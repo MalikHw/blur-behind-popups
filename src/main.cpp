@@ -5,27 +5,32 @@
 
 using namespace geode::prelude;
 
-static void tryAddBlur(CCNode* node) {
-    if (Mod::get()->getSettingValue<bool>("enabled") && BlurAPI::isBlurAPIEnabled())
-        BlurAPI::addBlur(node);
+static CCNode* backdropOf(FLAlertLayer* alert) {
+    auto children = alert ? alert->getChildren() : nullptr;
+    if (!children) return nullptr;
+    CCObject* obj = nullptr;
+    CCARRAY_FOREACH(children, obj) {
+        if (auto n = typeinfo_cast<CCNode*>(obj); n && (typeinfo_cast<CCLayerColor*>(n) || typeinfo_cast<CCLayerGradient*>(n) || n->getZOrder() < 0))
+            return n;
+    }
+    return nullptr;
 }
 
 struct $baseModify(FLAlertLayer) {
     void modify() {
         auto self = reinterpret_cast<FLAlertLayer*>(this);
         auto name = geode::cocos::getObjectName(self);
-
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage") return; // RewardUnlockLayer AND RewardUnlockLayer bugs as FUCK
-
-        tryAddBlur(self);
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer")
+            return;
+        if (Mod::get()->getSettingValue<bool>("enabled") && BlurAPI::isBlurAPIEnabled())
+            if (auto bg = backdropOf(self))
+                BlurAPI::addBlur(bg);
     }
 };
 
 class $modify(FLAlertLayer) {
     void destructor() {
-        BlurAPI::removeBlur(this);
+        if (auto bg = backdropOf(this)) BlurAPI::removeBlur(bg);
         FLAlertLayer::~FLAlertLayer();
     }
-    void onBtn1(CCObject* s) { BlurAPI::removeBlur(this); FLAlertLayer::onBtn1(s); }
-    void onBtn2(CCObject* s) { BlurAPI::removeBlur(this); FLAlertLayer::onBtn2(s); }
 };
