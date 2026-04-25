@@ -12,6 +12,14 @@ static CCNode* backdropOf(FLAlertLayer* alert) {
         if (n && (typeinfo_cast<CCLayerColor*>(n) || typeinfo_cast<CCLayerGradient*>(n)))
             return n;
     }
+    if (auto* parent = alert->getParent()) {
+        auto z = alert->getZOrder();
+        for (auto* n : parent->getChildrenExt<CCNode*>()) {
+            if (!n || n == alert) continue;
+            if ((typeinfo_cast<CCLayerColor*>(n) || typeinfo_cast<CCLayerGradient*>(n)) && n->getZOrder() <= z)
+                return n;
+        }
+    }
     return nullptr;
 }
 
@@ -44,7 +52,11 @@ class $modify(FLAlertLayer) {
             log::info("[blur-behind] blur applied");
             return;
         }
-        log::warn("[blur-behind] no backdrop found (children: {})", this->getChildrenCount());
+        log::warn(
+            "[blur-behind] no backdrop found (children: {}, parent children: {})",
+            this->getChildrenCount(),
+            this->getParent() ? this->getParent()->getChildrenCount() : 0
+        );
     }
 
     void destructor() {
