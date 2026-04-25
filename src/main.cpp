@@ -14,11 +14,14 @@ static CCNode* backdropOf(FLAlertLayer* alert) {
     }
     if (auto* parent = alert->getParent()) {
         auto z = alert->getZOrder();
+        CCNode* fallback = nullptr;
         for (auto* n : parent->getChildrenExt<CCNode*>()) {
             if (!n || n == alert) continue;
-            if ((typeinfo_cast<CCLayerColor*>(n) || typeinfo_cast<CCLayerGradient*>(n)) && n->getZOrder() <= z)
+            if (n->getZOrder() <= z) fallback = n;
+            if (typeinfo_cast<CCLayerColor*>(n) || typeinfo_cast<CCLayerGradient*>(n))
                 return n;
         }
+        if (fallback) return fallback;
     }
     return nullptr;
 }
