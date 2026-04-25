@@ -21,14 +21,30 @@ class $modify(FLAlertLayer) {
     void show() {
         FLAlertLayer::show();
         auto name = geode::cocos::getObjectName(this);
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer")
+        log::info("[blur-behind] show: {}", name.empty() ? "<unnamed>" : name);
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer") {
+            log::info("[blur-behind] skipped popup: {}", name);
             return;
-        if (!Mod::get()->getSettingValue<bool>("enabled") || !BlurAPI::isBlurAPIEnabled())
+        }
+        if (!Mod::get()->getSettingValue<bool>("enabled")) {
+            log::warn("[blur-behind] mod setting 'enabled' is false");
             return;
+        }
+        if (!BlurAPI::isBlurAPIEnabled()) {
+            log::warn("[blur-behind] blur-api not loaded/enabled");
+            return;
+        }
         if (auto bg = backdropOf(this)) {
+            log::info(
+                "[blur-behind] backdrop found: {}",
+                geode::cocos::getObjectName(bg).empty() ? "<unnamed>" : geode::cocos::getObjectName(bg)
+            );
             BlurAPI::addBlur(bg);
             s_blurred[this] = bg;
+            log::info("[blur-behind] blur applied");
+            return;
         }
+        log::warn("[blur-behind] no backdrop found (children: {})", this->getChildrenCount());
     }
 
     void destructor() {
