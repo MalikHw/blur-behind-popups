@@ -1,5 +1,5 @@
 ### v1.1.1
-- fixed bugs that broke icon 107(and other gradienty bs) and Custom Profiles
+- ~~fixed bugs that broke icon 107(and other gradienty icons) and Custom Profiles~~ uncertain
 - fixed bug with Better Color Picker by simply not blurring behind it LMAO
 ---
 
