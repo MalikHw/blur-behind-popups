@@ -33,7 +33,7 @@ class $modify(FLAlertLayer) {
         FLAlertLayer::show();
         auto name = geode::cocos::getObjectName(this);
         log::info("[blur-behind] show: {}", name.empty() ? "<unnamed>" : name);
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer") {
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer" || name == "ColorSelectPopup") {
             log::info("[blur-behind] skipped popup: {}", name);
             return;
         }
