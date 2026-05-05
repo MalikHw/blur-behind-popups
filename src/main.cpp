@@ -2,71 +2,30 @@
 #include <Geode/modify/FLAlertLayer.hpp>
 #include <alphalaneous.alphas_geode_utils/include/ObjectModify.hpp> // HOLY SHIT THAT'S EASIER
 #include "BlurAPI.hpp"
-#include <unordered_map>
 
 using namespace geode::prelude;
 
-static CCNode* backdropOf(FLAlertLayer* alert) {
-    if (!alert) return nullptr;
-    for (auto* n : alert->getChildrenExt<CCNode*>()) {
-        if (n && (typeinfo_cast<CCLayerColor*>(n) || typeinfo_cast<CCLayerGradient*>(n)))
-            return n;
-    }
-    if (auto* parent = alert->getParent()) {
-        auto z = alert->getZOrder();
-        CCNode* fallback = nullptr;
-        for (auto* n : parent->getChildrenExt<CCNode*>()) {
-            if (!n || n == alert) continue;
-            if (n->getZOrder() <= z) fallback = n;
-            if (typeinfo_cast<CCLayerColor*>(n) || typeinfo_cast<CCLayerGradient*>(n))
-                return n;
-        }
-        if (fallback) return fallback;
-    }
-    return nullptr;
+static void tryAddBlur(CCNode* node) {
+    if (Mod::get()->getSettingValue<bool>("enabled") && BlurAPI::isBlurAPIEnabled())
+        BlurAPI::addBlur(node);
 }
 
-static std::unordered_map<FLAlertLayer*, CCNode*> s_blurred;
+struct $baseModify(FLAlertLayer) {
+    void modify() {
+        auto self = reinterpret_cast<FLAlertLayer*>(this);
+        auto name = geode::cocos::getObjectName(self);
+
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer" || name == "ColorSelectPopup") return; // RewardsPage bugs as FUCK
+
+        tryAddBlur(self);
+    }
+};
 
 class $modify(FLAlertLayer) {
-    void show() {
-        FLAlertLayer::show();
-        auto name = geode::cocos::getObjectName(this);
-        log::info("[blur-behind] show: {}", name.empty() ? "<unnamed>" : name);
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer" || name == "ColorSelectPopup") {
-            log::info("[blur-behind] skipped popup: {}", name);
-            return;
-        }
-        if (!Mod::get()->getSettingValue<bool>("enabled")) {
-            log::warn("[blur-behind] mod setting 'enabled' is false");
-            return;
-        }
-        if (!BlurAPI::isBlurAPIEnabled()) {
-            log::warn("[blur-behind] blur-api not loaded/enabled");
-            return;
-        }
-        if (auto bg = backdropOf(this)) {
-            log::info(
-                "[blur-behind] backdrop found: {}",
-                geode::cocos::getObjectName(bg).empty() ? "<unnamed>" : geode::cocos::getObjectName(bg)
-            );
-            BlurAPI::addBlur(bg);
-            s_blurred[this] = bg;
-            log::info("[blur-behind] blur applied");
-            return;
-        }
-        log::warn(
-            "[blur-behind] no backdrop found (children: {}, parent children: {})",
-            this->getChildrenCount(),
-            this->getParent() ? this->getParent()->getChildrenCount() : 0
-        );
-    }
-
     void destructor() {
-        if (auto it = s_blurred.find(this); it != s_blurred.end()) {
-            if (it->second) BlurAPI::removeBlur(it->second);
-            s_blurred.erase(it);
-        }
+        BlurAPI::removeBlur(this);
         FLAlertLayer::~FLAlertLayer();
     }
+    void onBtn1(CCObject* s) { BlurAPI::removeBlur(this); FLAlertLayer::onBtn1(s); }
+    void onBtn2(CCObject* s) { BlurAPI::removeBlur(this); FLAlertLayer::onBtn2(s); }
 };
