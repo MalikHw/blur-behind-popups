@@ -10,21 +10,14 @@ static void tryAddBlur(CCNode* node) {
         BlurAPI::addBlur(node);
 }
 
-struct $baseModify(FLAlertLayer) {
-    void modify() {
-        auto self = reinterpret_cast<FLAlertLayer*>(this);
-        self->scheduleOnce(schedule_selector_lambda([self](float) {
-            if (!self->getParent()) return; // already gone
-            auto name = geode::cocos::getObjectName(self);
-            if (name == "ColorSelectLiveOverlay" || 
-                name == "HSVLiveOverlay" || 
-                name == "RewardUnlockLayer" || 
-                name == "RewardsPage" || 
-                name == "GJCommentListLayer" || 
-                name == "ColorSelectPopup") return;
+class $modify(MyFLAlertLayer, FLAlertLayer) {
+    void show() {
+        FLAlertLayer::show();
 
-            tryAddBlur(self);
-        }), 0.f, "blur-init");
+        auto name = geode::cocos::getObjectName(this);
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer" || name == "ColorSelectPopup") return;
+
+        tryAddBlur(this);
     }
 };
 
