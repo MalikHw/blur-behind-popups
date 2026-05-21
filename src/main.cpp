@@ -13,11 +13,18 @@ static void tryAddBlur(CCNode* node) {
 struct $baseModify(FLAlertLayer) {
     void modify() {
         auto self = reinterpret_cast<FLAlertLayer*>(this);
-        auto name = geode::cocos::getObjectName(self);
+        self->scheduleOnce(schedule_selector_lambda([self](float) {
+            if (!self->getParent()) return; // already gone
+            auto name = geode::cocos::getObjectName(self);
+            if (name == "ColorSelectLiveOverlay" || 
+                name == "HSVLiveOverlay" || 
+                name == "RewardUnlockLayer" || 
+                name == "RewardsPage" || 
+                name == "GJCommentListLayer" || 
+                name == "ColorSelectPopup") return;
 
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer" || name == "ColorSelectPopup") return; // RewardsPage bugs as FUCK
-
-        tryAddBlur(self);
+            tryAddBlur(self);
+        }), 0.f, "blur-init");
     }
 };
 
