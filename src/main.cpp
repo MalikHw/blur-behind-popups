@@ -5,9 +5,13 @@
 
 using namespace geode::prelude;
 
+
 static void tryAddBlur(CCNode* node) {
     if (Mod::get()->getSettingValue<bool>("enabled") && BlurAPI::isBlurAPIEnabled())
         BlurAPI::addBlur(node);
+        BlurAPI::getOptions(node)->forcePasses = true;
+        BlurAPI::getOptions(node)->passes = Mod::get()->getSettingValue<int>("amount");
+
 }
 
 struct $baseModify(FLAlertLayer) {
@@ -15,17 +19,18 @@ struct $baseModify(FLAlertLayer) {
         auto self = reinterpret_cast<FLAlertLayer*>(this);
         auto name = geode::cocos::getObjectName(self);
 
-        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "RewardsPage" || name == "GJCommentListLayer" || name == "ColorSelectPopup") return; // RewardsPage bugs as FUCK
-
-        tryAddBlur(self);
+        if (name == "ColorSelectLiveOverlay" || name == "HSVLiveOverlay" || name == "RewardUnlockLayer" || name == "GJCommentListLayer" || name == "ColorSelectPopup") return;
+        auto blurNode = CCLayerColor::create();
+        this->addChild(blurNode);
+        blurNode->setID("blurNode"_spr);
+        blurNode->setZOrder(this->getZOrder() - 1);
+        tryAddBlur(blurNode);
     }
 };
 
 class $modify(FLAlertLayer) {
     void destructor() {
-        BlurAPI::removeBlur(this);
-        FLAlertLayer::~FLAlertLayer();
+        BlurAPI::removeBlur(this->getChildByID("blurNode"_spr));
     }
-    void onBtn1(CCObject* s) { BlurAPI::removeBlur(this); FLAlertLayer::onBtn1(s); }
-    void onBtn2(CCObject* s) { BlurAPI::removeBlur(this); FLAlertLayer::onBtn2(s); }
+        
 };

@@ -1,7 +1,6 @@
 Adds blur behind pop ups and some UI elements! simple but cool
 (ios is bugged till Blur API updates)
 
-#### WONT WORK ON DAILY CHESTS PAGE BECAUSE IT'S BROKEN
 
 ## Credits
 - made by [MalikHw47](https://youtube.com/@MalikHw47)

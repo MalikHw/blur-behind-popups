@@ -39,3 +39,8 @@
 
 # debug information files
 *.dwo
+
+# Ignore build folders
+**/build
+# Ignore platform specific build folders
+build-*/
