@@ -5,6 +5,6 @@ Adds blur behind pop ups and some UI elements! simple but cool
 ## Credits
 - made by [MalikHw47](https://youtube.com/@MalikHw47)
 - logo by [HelloHelloHello](https://www.youtube.com/@hello_hello_hello_gd)
-- a bugfix by [DominoKiddo](https://github.com/dominokiddo)
+- a bugfix by [DominoKiddo](https://github.com/dominokiddoo)
 
 if i forgot smth pls tell me [here](https://github.com/MalikHw/blur-behind-popups/issues)
